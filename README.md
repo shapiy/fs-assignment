@@ -46,50 +46,18 @@ The first word of the description maps to a MIL-STD-2525 CoT type code:
 | sam | a-h-G-U-C-D-A | Hostile SAM |
 | *(other)* | a-h-G | Generic hostile |
 
-## Setup
+## Setup and Testing
 
-### Prerequisites
+See [TESTING.md](TESTING.md) for full setup, end-to-end testing instructions, and screenshots.
 
-- [uv](https://docs.astral.sh/uv/) for Python dependency management
-- [signal-cli](https://github.com/AsamK/signal-cli) (`brew install signal-cli` on macOS)
-- A Signal account (phone number)
-- ATAK/iTAK/WinTAK on the same network
-
-### 1. Clone and install
+## Quick Start
 
 ```bash
-git clone <repo-url> && cd signal-atak-bot
 uv sync
-```
-
-### 2. Link signal-cli to your Signal account
-
-```bash
 signal-cli link -n signal-atak-bot
-```
-
-This prints a `sgnl://` URI. On your phone, open Signal > Settings > Linked Devices > Link New Device and scan the QR code (or paste the URI).
-
-Once you see `Associated with: +<your-number>`, the link is complete.
-
-### 3. Start signal-cli daemon
-
-```bash
 signal-cli -a <your-number> daemon --tcp localhost:7583 --http localhost:8080 --no-receive-stdout
-```
-
-### 4. Start the bot
-
-```bash
 SIGNAL_ACCOUNT=<your-number> uv run signal-atak-bot
 ```
-
-### 5. Configure ATAK
-
-In ATAK, ensure you're listening for CoT on the same network:
-- Settings > Network Preferences > Network Connections
-- Add a UDP input on port `6969` (or your configured port)
-- If using multicast, join group `239.2.3.1`
 
 ## Testing
 
@@ -112,27 +80,6 @@ uv run python scripts/send_test_cot.py 48.567123 39.87897 tank
 ```
 
 You should see the CoT XML printed in Terminal 1.
-
-### Test with real ATAK
-
-```bash
-uv run python scripts/send_test_cot.py 48.567123 39.87897 tank --host <ATAK_IP> --unicast
-```
-
-A hostile armor marker should appear on the ATAK map.
-
-## Architecture
-
-```
-src/signal_atak_bot/
-├── main.py              # Entry point, async event loop
-├── signal_client.py     # JSON-RPC client for signal-cli (TCP + HTTP)
-├── signal_handler.py    # Parses geolocation messages
-├── cot_formatter.py     # Builds CoT XML from TargetReport
-├── atak_sender.py       # Sends CoT XML over UDP
-├── models.py            # TargetReport dataclass
-└── config.py            # Settings from environment variables
-```
 
 ## CoT Protocol
 

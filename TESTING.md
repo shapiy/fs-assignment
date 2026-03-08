@@ -2,7 +2,22 @@
 
 Tested on macOS (bot + signal-cli) and iOS (iTAK).
 
-### 1. Link signal-cli
+## Prerequisites
+
+- [uv](https://docs.astral.sh/uv/) for Python dependency management
+- [signal-cli](https://github.com/AsamK/signal-cli) (`brew install signal-cli` on macOS)
+- A Signal account (phone number)
+- [iTAK](https://apps.apple.com/app/itak/id1561656396) on iOS (same WiFi network as Mac)
+
+## End-to-End Test
+
+### 1. Install dependencies
+
+```bash
+uv sync
+```
+
+### 2. Link signal-cli
 
 ```bash
 signal-cli link -n signal-atak-bot
@@ -17,25 +32,25 @@ INFO  ProvisioningManagerImpl - Received link information from +<your-number>, l
 Associated with: +<your-number>
 ```
 
-### 2. Start signal-cli daemon
+### 3. Start signal-cli daemon
 
 ```bash
 signal-cli -a <your-number> daemon --tcp localhost:7583 --http localhost:8080 --no-receive-stdout
 ```
 
-### 3. Start the bot
+### 4. Start the bot
 
 ```bash
 SIGNAL_ACCOUNT=<your-number> ATAK_HOST=<iphone-ip> ATAK_USE_MULTICAST=false uv run signal-atak-bot
 ```
 
-### 4. Configure iTAK on iOS
+### 5. Configure iTAK on iOS
 
 1. Mac and iPhone must be on the same WiFi network
 2. Find your iPhone's IP: Settings > WiFi > tap (i) next to your network
 3. Open iTAK on iPhone, enable Mesh Network (Settings > Mesh Networks > toggle on)
 
-### 5. Send a test message
+### 6. Send a test message
 
 Send a Signal message from another device to your linked number:
 ```
